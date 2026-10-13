@@ -95,11 +95,15 @@ lstk verify lstk-reports/audit-*.json
 Exit code: `0` ok · `2` argomenti/autorizzazione non validi · `3` soglia `--fail-on` superata · `1` errore di scrittura/verifica.
 I rapporti vanno trattati come **riservati** (contengono hostname, account, porte, configurazioni). Directory: `lstk-reports/` (o `LSTK_REPORT_DIR`).
 
-## Test
+## Per avviare !!
 
 ```bash
-pip install -e ".[test]"
-pytest -q         
+rm -rf .venv
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -e .
+
+sudo .venv/bin/lstk      
 ```
 
 ## Struttura
