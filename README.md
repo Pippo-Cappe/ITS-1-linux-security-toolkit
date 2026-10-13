@@ -1,0 +1,119 @@
+# Linux Security Toolkit (LSTK) v0.5.0
+
+Risk assessment per sistemi Linux: **controlli nativi + integrità dei file + Nmap + Trivy + Lynis** in un unico comando `/scan`, con matrice di rischio,
+voto, copertura dichiarata e rapporti verificabili (hash/HMAC). Pensato per essere **onesto sui propri limiti**: un controllo
+non conclusivo non viene mai presentato come "sicuro".
+
+> **Non è una certificazione** né un sostituto di un penetration test o di una revisione professionale. Vedi [Limiti](#limiti) e [SECURITY.md](SECURITY.md).
+
+## Cosa fa `/scan`
+
+| Modalità | Controlli nativi | Integrità file | Nmap | Trivy | Lynis |
+|---|---|---|---|---|---|
+| `quick` | base | no | top-1000 porte TCP | no | no |
+| `deep` | estesi (SUID, world-writable, orfani, servizi) | **sì** | tutte le porte TCP | no | no |
+| **`full`** (default) | estesi | **sì** | tutte le porte TCP + script `default` + UDP top-50 (se root) | **sì** | **sì** |
+
+- **Integrità dei file** (`dpkg --verify` / `rpm -Va`): confronta i file installati con il database dei pacchetti; segnala binari e librerie con contenuto diverso dal pacchetto.
+- **Trivy** (modalità `rootfs` su tutto il filesystem): vulnerabilità (CVE) dei pacchetti di sistema e delle librerie, **segreti nei file** (chiavi private, token), sistema operativo fuori supporto. Del segreto non viene mai riportato il contenuto, solo file, righe e regola.
+
+Tutto è **in sola lettura**: nessuna modifica al sistema, nessun aggiornamento degli indici dei pacchetti.
+Prima di partire `/scan` mostra il piano e chiede conferma. Di default Nmap scansiona **solo il sistema locale**
+(loopback + indirizzi delle proprie interfacce), distinguendo i servizi realmente esposti in rete da quelli solo su loopback.
+
+Output: voto A–F, punteggio di postura 0–100, matrice 5×5 probabilità × impatto, registro dei rischi ordinato, elenco dei
+**controlli non verificati**, moduli eseguiti e comandi lanciati. Metodologia: [docs/METHODOLOGY.md](docs/METHODOLOGY.md).
+
+## Installazione
+
+```bash
+# Kali / Debian / Ubuntu
+sudo apt update && sudo apt install -y python3 python3-venv python3-pip nmap lynis iproute2
+# Fedora / Rocky / RHEL (lynis da EPEL)
+sudo dnf install -y python3 python3-pip nmap lynis iproute
+
+python3 -m venv .venv && . .venv/bin/activate
+pip install -e .
+lstk
+```
+
+Nmap, Lynis e Trivy sono opzionali: se mancano, il modulo viene saltato, il rapporto lo dichiara e la valutazione è marcata **parziale**.
+
+### Installare Trivy (verificando l'integrità)
+Segui le istruzioni ufficiali su <https://trivy.dev> (repository apt/rpm firmato), oppure scarica la release e verifica il checksum:
+
+```bash
+V=0.75.0   # sostituisci con la versione desiderata
+curl -LO https://github.com/aquasecurity/trivy/releases/download/v$V/trivy_${V}_Linux-64bit.tar.gz
+curl -LO https://github.com/aquasecurity/trivy/releases/download/v$V/trivy_${V}_checksums.txt
+sha256sum -c --ignore-missing trivy_${V}_checksums.txt     # deve rispondere OK
+tar xzf trivy_${V}_Linux-64bit.tar.gz trivy && sudo install -m 0755 trivy /usr/local/bin/trivy
+```
+
+Trivy scarica il **database pubblico delle vulnerabilità** da un registry OCI (mirror.gcr.io / ghcr.io): serve accesso di rete la prima volta e poi periodicamente.
+Per ambienti isolati: precarica la cache su un host connesso (`trivy image --download-db-only`), copiala sul sistema da analizzare e usa `--offline`
+(opzionale `LSTK_TRIVY_CACHE_DIR`). Se il database non è disponibile, LSTK esegue solo la ricerca dei segreti e dichiara le vulnerabilità **non valutate** (valutazione parziale).
+
+### Privilegi
+Per un audit completo (shadow, sudoers, `sshd -T`, regole firewall, UDP, Lynis in modalità completa):
+
+```bash
+sudo .venv/bin/lstk          # dopo aver verificato provenienza e integrità del pacchetto
+```
+
+Senza root l'audit funziona ma è **parziale** (voto massimo B) e le verifiche non possibili risultano `manual`, mai `pass`.
+
+## Console interattiva
+
+```text
+/scan [quick|deep|full] [--target IP|CIDR|host] [--no-nmap] [--no-lynis] [--no-trivy] [--no-integrity] [--offline]
+/vuln [--offline]           solo Trivy: vulnerabilità e segreti
+/integrity                  solo verifica integrità dei file installati
+/risk                       sintesi: voto, matrice, rischi principali
+/findings [issues|all|critical|high|medium|low|unverified]
+/details ID                 dettaglio, rischio (P×I), riferimenti
+/report [json|html|all]     rapporti 0600 + .sha256 (+ HMAC se configurato)
+/verify FILE                verifica integrità di un rapporto
+/profile desktop|server     /lynis   /checks   /status   /fix ID   /help   /exit
+```
+
+### Bersagli non locali
+`/scan full --target 192.168.1.10` (anche CIDR fino a /24 o hostname) richiede di digitare **AUTORIZZO**: scansionare sistemi
+altrui senza autorizzazione scritta può essere illegale. Solo IPv4. L'autorizzazione dichiarata è registrata nel rapporto.
+
+## Uso aziendale / CI
+
+```bash
+# JSON su stdout, avanzamento su stderr; exit code 3 se il rischio complessivo è >= high
+sudo lstk scan --profile server --mode full --save --fail-on high > assessment.json
+
+# Firma HMAC dei rapporti (chiave >= 16 caratteri, gestita fuori dal repository)
+export LSTK_SIGNING_KEY='…'
+lstk verify lstk-reports/audit-*.json
+```
+
+Exit code: `0` ok · `2` argomenti/autorizzazione non validi · `3` soglia `--fail-on` superata · `1` errore di scrittura/verifica.
+I rapporti vanno trattati come **riservati** (contengono hostname, account, porte, configurazioni). Directory: `lstk-reports/` (o `LSTK_REPORT_DIR`).
+
+## Test
+
+```bash
+pip install -e ".[test]"
+pytest -q          # 84 test; nessun comando reale viene eseguito dai test con runner simulato
+```
+
+## Struttura
+
+```
+lstk/audit.py      controlli nativi        lstk/nmapscan.py  Nmap: validazione, parsing, regole
+lstk/lynis.py      esecuzione e import     lstk/risk.py      probabilità × impatto, voto
+lstk/trivy.py      vulnerabilità/segreti   lstk/integrity.py dpkg --verify / rpm -Va
+lstk/scan.py       orchestratore /scan     lstk/report.py    JSON/HTML, hash, HMAC, verify
+lstk/runner.py     esecuzione sicura       lstk/remediation.py primitive file (non collegate ai finding)
+```
+
+## Limiti
+
+- Valutazione tecnica best-effort: dipende da privilegi, distribuzione e strumenti installati.
+- Le CVE provengono dal database di Trivy: una CVE presente non implica che sia sfruttabile nel proprio contesto. Nmap non correla i servizi alle CVE. Solo IPv4.
+- L'integrità dei file non rileva file *aggiunti* da un attaccante e può dare falsi positivi (es. `update-alternatives`); i segreti sono rilevati per pattern.
