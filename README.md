@@ -99,7 +99,7 @@ I rapporti vanno trattati come **riservati** (contengono hostname, account, port
 
 ```bash
 pip install -e ".[test]"
-pytest -q          # 84 test; nessun comando reale viene eseguito dai test con runner simulato
+pytest -q         
 ```
 
 ## Struttura
