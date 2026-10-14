@@ -1,15 +1,14 @@
+
+<img width="1943" height="738" alt="Screenshot 2026-10-14 121727" src="https://github.com/user-attachments/assets/6cfaa003-d88a-47f2-8ce3-ac3efca614a5" />
+
+
+
+
 # Linux Security Toolkit (LSTK) v0.6.0
 
 **Assessment di sicurezza automatico per macchine Linux, con risk assessment `rischio = probabilità × impatto`.**
 
 LSTK integra **più fonti di informazione** in un unico comando e riporta quanto rilevato in una tabella di rischio:
-
-
-<img width="1443" height="238" alt="Screenshot 2026-10-14 121727" src="https://github.com/user-attachments/assets/6cfaa003-d88a-47f2-8ce3-ac3efca614a5" />
-
-
-
-
 
 | Fonte | Cosa contribuisce |
 |---|---|
