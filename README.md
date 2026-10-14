@@ -17,8 +17,8 @@ LSTK integra **più fonti di informazione** in un unico comando e riporta quanto
 ## Avvio rapido (un solo comando dopo il clone)
 
 ```bash
-git clone https://github.com/<utente>/<repo>.git
-cd <repo>
+git clone [https://github.com/<utente>/<repo>.git](https://github.com/Pippo-Cappe/ITS-1-linux-security-toolkit.git)
+cd <ITS-1-linux-security-toolkit>
 ./run.sh            # al primo avvio esegue install.sh (chiede conferma prima di installare qualsiasi cosa)
 ```
 
