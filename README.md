@@ -4,6 +4,26 @@
 
 LSTK integra **più fonti di informazione** in un unico comando e riporta quanto rilevato in una tabella di rischio:
 
+
+
+╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                                                                                                                  ║
+║                                                                                                                                                                                  ║
+║   ██╗     ███████╗████████╗██╗  ██╗                                                                                                                                              ║
+║   ██║     ██╔════╝╚══██╔══╝██║ ██╔╝                                                                                                                                              ║
+║   ██║     ███████╗   ██║   █████╔╝                                                                                                                                               ║
+║   ██║     ╚════██║   ██║   ██╔═██╗                                                                                                                                               ║
+║   ███████╗███████║   ██║   ██║  ██╗                                                                                                                                              ║
+║   ╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝                                                                                                                                              ║
+║   LINUX SECURITY TOOLKIT                                                                                                                                                         ║
+║   Risk Assessment · Nmap · Lynis                                                                                                                                                 ║
+║                                                                                                                                                                                  ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+
+
+
+
+
 | Fonte | Cosa contribuisce |
 |---|---|
 | Controlli nativi (Python, sola lettura) | account, SSH, firewall, kernel/sysctl, permessi, SUID, logging, aggiornamenti in sospeso… |
