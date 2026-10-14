@@ -5,6 +5,11 @@
 LSTK integra **più fonti di informazione** in un unico comando e riporta quanto rilevato in una tabella di rischio:
 
 
+![foto](C:\Users\Utente06\Desktop\Screenshot 2026-10-14 121727.png)
+
+
+
+
 | Fonte | Cosa contribuisce |
 |---|---|
 | Controlli nativi (Python, sola lettura) | account, SSH, firewall, kernel/sysctl, permessi, SUID, logging, aggiornamenti in sospeso… |
