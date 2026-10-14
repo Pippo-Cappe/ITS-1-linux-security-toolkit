@@ -174,6 +174,4 @@ Elenco completo in [ROADMAP.md](ROADMAP.md). Principali:
 - Hardening: [CIS Benchmarks](https://www.cisecurity.org/cis-benchmarks) · [CISOfy – controlli Lynis](https://cisofy.com/lynis/controls/)
 - Librerie: [Typer](https://typer.tiangolo.com/) · [Rich](https://rich.readthedocs.io/)
 
-## Licenza
 
-Da definire dal maintainer prima della pubblicazione.
