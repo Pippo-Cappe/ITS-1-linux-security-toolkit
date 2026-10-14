@@ -1,0 +1,26 @@
+# Roadmap
+
+- [x] Console interattiva con prompt e help
+- [x] Profili desktop/server selezionabili
+- [x] Controlli base con evidenze e stati non conclusivi espliciti
+- [x] Esportazione JSON e HTML (con hash e firma opzionale)
+- [x] Rilevamento e avvio di Lynis
+- [x] Primitive remediation: diff, backup, scrittura atomica e conferma
+- [x] Importazione del report Lynis
+- [x] Integrazione Nmap con controllo dell'autorizzazione
+- [x] Risk assessment (probabilità × impatto, matrice, voto, copertura)
+- [x] Integrità dei rapporti e verifica (`lstk verify`)
+- [x] Esecuzione non interattiva con exit code per CI (`--fail-on`)
+- [x] Installazione guidata degli strumenti mancanti e bootstrap con un solo comando dopo `git clone`
+- [ ] Assessment remoto agent-less: Nmap dall'esterno + ingresso automatico via SSH per i controlli interni
+- [ ] Priorità basata su exploitability (EPSS/CISA KEV) oltre alla gravità
+- [ ] Correzioni specifiche per singoli finding, con validazione per distribuzione
+- [ ] Baseline CIS/SCAP e controlli di compliance
+- [x] Vulnerabilità dei pacchetti e segreti nei file (Trivy) e integrità dei file di pacchetto
+- [ ] Correlazione CVE per i servizi rilevati da Nmap (versioni in ascolto)
+- [ ] Rilevamento rootkit e file aggiunti (AIDE/rkhunter/chkrootkit) e controllo di integrità continuo
+- [ ] Scanner aggiuntivo (es. Grype/Vuls) per confrontare le fonti di vulnerabilità
+- [ ] Persistenza/storico degli audit e confronto tra scansioni (trend, nuovi/risolti)
+- [ ] Supporto IPv6 in Nmap; esportazione SARIF/CSV
+- [ ] Test d'integrazione su Kali, Debian, Ubuntu, Fedora e Rocky Linux (container + VM)
+- [ ] Supply chain: lockfile con hash, SBOM, rilascio firmato, revisione di sicurezza indipendente
