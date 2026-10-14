@@ -5,7 +5,8 @@
 LSTK integra **più fonti di informazione** in un unico comando e riporta quanto rilevato in una tabella di rischio:
 
 
-![foto](C:\Users\Utente06\Desktop\Screenshot 2026-10-14 121727.png)
+<img width="1443" height="238" alt="Screenshot 2026-10-14 121727" src="https://github.com/user-attachments/assets/6cfaa003-d88a-47f2-8ce3-ac3efca614a5" />
+
 
 
 
